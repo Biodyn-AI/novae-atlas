@@ -264,6 +264,23 @@ export default function HomePage() {
         <DepthFlowChart flow={flow} />
       </section>
 
+      {/* SIGNIFICANCE DISTRIBUTION */}
+      {summary.significance_distribution && (
+        <section className="card">
+          <h2 className="text-base font-semibold text-slate-100 mb-1 flex items-center">
+            How many features are statistically significant?
+            <InfoIcon tip="Per-feature composite significance score combining PanglaoDB cell-type FDR and Novae niche enrichment. Score = -log₁₀(PanglaoDB FDR) + 5 × log₂(niche enrichment). Higher = more confident the feature represents real, specific biology." />
+          </h2>
+          <p className="text-xs text-slate-500 mb-4">
+            Distribution of the composite significance score across the aggregator and cell_embedder
+            surfaces. <strong className="text-brand-300">{summary.significance_distribution.aggregator.n_above_20}</strong> aggregator
+            features score ≥ 20, <strong className="text-emerald-300">{summary.significance_distribution.aggregator.n_above_50}</strong> score ≥ 50.
+            Use the "min sig" filter on any surface page to dial down to high-confidence features only.
+          </p>
+          <SignificanceHistogram dist={summary.significance_distribution} />
+        </section>
+      )}
+
       {/* FEATURED STORIES */}
       <section>
         <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-4">
@@ -338,6 +355,48 @@ function UseLink({ to, title, children }) {
         <div className="text-xs text-slate-500 leading-relaxed mt-0.5">{children}</div>
       </Link>
     </li>
+  )
+}
+
+function SignificanceHistogram({ dist }) {
+  const agg = dist.aggregator
+  const ce = dist.cell_embedder
+  const centers = agg.bin_edges.slice(0, -1).map((e, i) => (e + agg.bin_edges[i + 1]) / 2)
+  return (
+    <div className="pointer-events-none">
+      <Plot
+        data={[
+          {
+            x: centers,
+            y: agg.counts,
+            type: 'bar',
+            name: 'aggregator',
+            marker: { color: '#38bdf8', opacity: 0.85 },
+          },
+          {
+            x: centers,
+            y: ce.counts,
+            type: 'bar',
+            name: 'cell_embedder',
+            marker: { color: '#a855f7', opacity: 0.85 },
+          },
+        ]}
+        layout={{
+          ...PLOTLY_LAYOUT_BASE,
+          height: 260,
+          barmode: 'group',
+          xaxis: { ...PLOTLY_LAYOUT_BASE.xaxis, title: { text: 'significance score', font: { size: 11 } } },
+          yaxis: { ...PLOTLY_LAYOUT_BASE.yaxis, title: { text: 'feature count', font: { size: 11 } } },
+          showlegend: true,
+          legend: { orientation: 'h', y: -0.25, font: { size: 10 } },
+          margin: { l: 50, r: 16, t: 10, b: 60 },
+          dragmode: false,
+        }}
+        config={{ displayModeBar: false, responsive: true, staticPlot: true, scrollZoom: false }}
+        useResizeHandler
+        style={{ width: '100%' }}
+      />
+    </div>
   )
 }
 

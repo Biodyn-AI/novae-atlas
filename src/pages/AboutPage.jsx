@@ -44,6 +44,45 @@ export default function AboutPage() {
         <li><strong className="text-slate-100">Niche specificity</strong> — at level-20 (finest) niches, 35% of aggregator features are &gt;4× enriched for one specific Novae niche. Several features hit 100% concentration.</li>
       </ul>
 
+      <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">How niches were named</h2>
+      <p className="text-slate-300 leading-relaxed">
+        Novae's hierarchical niches come out of the SwAV prototype head as opaque codes
+        (<code className="bg-slate-800 px-1 py-0.5 rounded text-brand-300 text-xs">D948</code>,{' '}
+        <code className="bg-slate-800 px-1 py-0.5 rounded text-brand-300 text-xs">D977</code>,{' '}
+        <code className="bg-slate-800 px-1 py-0.5 rounded text-brand-300 text-xs">D980</code>, …).
+        We auto-derive a human-readable label for each niche using a simple rule:
+      </p>
+      <ol className="text-slate-300 leading-relaxed list-decimal list-inside space-y-1 ml-2 mt-3">
+        <li>For each niche, find the aggregator SAE feature with the <strong className="text-slate-100">highest log₂ enrichment</strong> for that niche.</li>
+        <li>Take that feature's PanglaoDB cell-type label (or fall back to GO BP / top genes if PanglaoDB is missing).</li>
+        <li>That label becomes the niche's display name.</li>
+      </ol>
+      <p className="text-slate-300 leading-relaxed mt-3">
+        For example, niche <code className="bg-slate-800 px-1 py-0.5 rounded text-brand-300 text-xs">D980</code>{' '}
+        is dominated by feature 157, whose top genes are AQP2 / GATA2 / ELF5 — so D980 is labeled
+        "Distal Tubule Cells" everywhere in the atlas.
+      </p>
+      <p className="text-slate-400 text-sm leading-relaxed mt-3">
+        <strong className="text-slate-200">Caveat:</strong> a niche may contain a mix of cell types
+        the dominant feature doesn't capture. The auto-derived label is a starting point — when in
+        doubt, click into the niche to see the full feature list and the tissue distribution.
+      </p>
+
+      <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">Significance score</h2>
+      <p className="text-slate-300 leading-relaxed">
+        Every aggregator and cell_embedder feature has a composite significance score combining its
+        cell-type-database confidence with its spatial-niche specificity:
+      </p>
+      <div className="card !p-4 mt-3 font-mono text-xs text-slate-300 leading-relaxed">
+        sig = min(50, −log₁₀(PanglaoDB FDR)) + 5 × min(10, max(0, niche log₂ enrichment))
+      </div>
+      <p className="text-slate-400 text-sm leading-relaxed mt-3">
+        Range is roughly 0–100. A feature scoring ≥ 50 has both very strong PanglaoDB
+        cell-type significance AND strong niche concentration. Use the "min sig" slider on any
+        surface page to filter down to high-confidence features. Sort by sig to find the most
+        defensible features quickly.
+      </p>
+
       <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">Glossary</h2>
       <p className="text-slate-400 text-sm mb-4">
         Every technical term in the atlas, in one sentence.

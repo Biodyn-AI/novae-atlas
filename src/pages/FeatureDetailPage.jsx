@@ -431,22 +431,29 @@ function EnrichCard({ lib, hit }) {
 
 function NicheCard({ levelName, dm }) {
   const strong = dm.log2_enrichment != null && dm.log2_enrichment > 2
+  const lvlNum = levelName.replace('level_', '')
   return (
-    <div className={`card ${strong ? 'border-brand-500/40' : ''}`}>
+    <Link
+      to={dm.top_domain ? `/niches/${levelName}/${dm.top_domain}` : '#'}
+      className={`card block transition ${strong ? 'border-brand-500/40 hover:border-brand-400' : 'hover:border-slate-600'}`}
+    >
       <div className="flex items-center justify-between mb-1">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
           {levelName.replace('_', ' ')}
         </div>
         {strong && <span className="pill-blue">strong</span>}
       </div>
-      <div className="font-mono text-base font-semibold text-slate-100">{dm.top_domain || '—'}</div>
-      <div className="text-xs text-slate-400 mt-1">
+      {dm.top_domain_lb && (
+        <div className="font-semibold text-slate-100 leading-tight mb-1">{dm.top_domain_lb}</div>
+      )}
+      <div className="font-mono text-xs text-slate-500">{dm.top_domain || '—'}</div>
+      <div className="text-xs text-slate-400 mt-2">
         {dm.top_domain_frac != null ? (dm.top_domain_frac * 100).toFixed(1) : '—'}% of top cells
       </div>
       <div className="text-[10px] font-mono text-slate-500 mt-0.5">
         log₂ enr {dm.log2_enrichment?.toFixed(2) ?? '—'} · FDR {fmtSci(dm.fdr)}
       </div>
-    </div>
+    </Link>
   )
 }
 

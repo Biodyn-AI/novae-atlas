@@ -40,6 +40,14 @@ export async function getCellTypeIndex() {
   return fetchJson('/celltype_index.json')
 }
 
+export async function getNicheCommunication() {
+  try {
+    return await fetchJson('/niche_communication.json')
+  } catch (e) {
+    return null
+  }
+}
+
 export async function getSurfaces() {
   return fetchJson('/surfaces.json')
 }

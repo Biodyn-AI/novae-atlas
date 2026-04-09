@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getNicheIndex, getFeatureTable } from '../lib/data.js'
+import { getNicheIndex, getFeatureTable, getNicheCommunication } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
 
 export default function NicheBrowsePage() {
   const { level, niche } = useParams()
   const [index, setIndex] = useState(null)
+  const [comm, setComm] = useState(null)
   const [aggLb, setAggLb] = useState({})
   const [error, setError] = useState(null)
   const [activeLevel, setActiveLevel] = useState(level || 'level_20')
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    Promise.all([getNicheIndex(), getFeatureTable('aggregator')])
-      .then(([idx, agg]) => {
+    Promise.all([getNicheIndex(), getFeatureTable('aggregator'), getNicheCommunication()])
+      .then(([idx, agg, c]) => {
         setIndex(idx)
+        setComm(c)
         const lk = {}
         for (const f of agg) lk[f.feature_idx] = f.lb
         setAggLb(lk)
@@ -56,6 +58,7 @@ export default function NicheBrowsePage() {
   // Detail view
   if (level && niche && index[level] && index[level][niche]) {
     const entry = index[level][niche]
+    const ccc = comm && comm[level] && comm[level][niche]
     return (
       <div>
         <div className="text-xs text-slate-500 mb-2">
@@ -70,53 +73,107 @@ export default function NicheBrowsePage() {
           <p className="text-slate-400 mt-2">
             <span className="text-brand-300">{entry.n_features}</span> aggregator SAE features prefer this niche.
             Top tissues:{' '}
-            {Object.keys(entry.top_tissues).slice(0, 5).map((t, i, arr) => (
-              <span key={t}>
-                <span className="pill-slate ml-1">{t}</span>
-                {i < arr.length - 1 ? '' : ''}
-              </span>
+            {Object.keys(entry.top_tissues).slice(0, 5).map((t) => (
+              <span key={t} className="pill-slate ml-1">{t}</span>
             ))}
           </p>
         </div>
 
-        <div className="card !p-0 overflow-hidden">
-          <table className="atlas">
-            <thead>
-              <tr>
-                <th>idx</th>
-                <th>label</th>
-                <th>frac</th>
-                <th>log₂ enr</th>
-                <th>FDR</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entry.features.map((f, i) => (
-                <tr key={i}>
-                  <td className="font-mono text-xs text-slate-500">
-                    <Link to={`/surface/aggregator/feature/${f.i}`} className="hover:text-brand-300">
-                      f{f.i}
-                    </Link>
-                  </td>
-                  <td>
-                    <Link
-                      to={`/surface/aggregator/feature/${f.i}`}
-                      className="font-semibold text-slate-100 hover:text-brand-300"
-                    >
-                      {aggLb[f.i] || 'Unannotated'}
-                    </Link>
-                  </td>
-                  <td className="font-mono tabular-nums text-slate-300">
-                    {(f.frac * 100).toFixed(1)}%
-                  </td>
-                  <td className="font-mono tabular-nums text-brand-300">
-                    {f.log2enr.toFixed(2)}
-                  </td>
-                  <td className="font-mono text-xs text-slate-500">{fmtSci(f.fdr)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* LEFT — features */}
+          <div>
+            <h2 className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">
+              SAE features that prefer this niche
+            </h2>
+            <div className="card !p-0 overflow-hidden">
+              <table className="atlas">
+                <thead>
+                  <tr>
+                    <th>idx</th>
+                    <th>label</th>
+                    <th>frac</th>
+                    <th>log₂ enr</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {entry.features.map((f, i) => (
+                    <tr key={i}>
+                      <td className="font-mono text-xs text-slate-500">
+                        <Link to={`/surface/aggregator/feature/${f.i}`} className="hover:text-brand-300">
+                          f{f.i}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link
+                          to={`/surface/aggregator/feature/${f.i}`}
+                          className="font-semibold text-slate-100 hover:text-brand-300"
+                        >
+                          {aggLb[f.i] || 'Unannotated'}
+                        </Link>
+                      </td>
+                      <td className="font-mono tabular-nums text-slate-300">
+                        {(f.frac * 100).toFixed(1)}%
+                      </td>
+                      <td className="font-mono tabular-nums text-brand-300">
+                        {f.log2enr.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* RIGHT — cell-cell communication */}
+          <div>
+            <h2 className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2 flex items-center justify-between">
+              <span>Cell-cell communication (top L-R pairs)</span>
+              {ccc && <span className="text-slate-600 text-[9px] normal-case tracking-normal font-normal">via LIANA consensus</span>}
+            </h2>
+            {!ccc ? (
+              <div className="card text-center text-slate-500 text-sm py-6">
+                {comm == null
+                  ? 'CCC analysis not yet baked. Run scripts/06_cell_cell_communication.py.'
+                  : 'No L-R signal found in this niche (gene panel may not cover the L-R pairs).'}
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-slate-500 mb-3">
+                  Top ligand-receptor pairs by enrichment over the corpus baseline. Score is the
+                  mean of <code className="text-slate-400">min(L_expr, R_expr)</code> across cells in
+                  this niche; enrichment compares it to the same metric across all cells in the slides
+                  where the pair is measured.{' '}
+                  <span className="text-slate-600">{ccc.n_cells_total.toLocaleString()} cells total in this niche.</span>
+                </p>
+                <div className="card !p-0 overflow-hidden">
+                  <table className="atlas">
+                    <thead>
+                      <tr>
+                        <th>L</th>
+                        <th>R</th>
+                        <th>enr</th>
+                        <th>score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ccc.lr.map((p, i) => (
+                        <tr key={i}>
+                          <td className="font-mono font-semibold text-slate-100 uppercase">{p.L}</td>
+                          <td className="font-mono font-semibold text-slate-100 uppercase">{p.R}</td>
+                          <td className="font-mono tabular-nums text-brand-300">
+                            {p.enrichment.toFixed(2)}×
+                          </td>
+                          <td className="font-mono tabular-nums text-slate-400 text-xs">
+                            {p.score.toFixed(3)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     )

@@ -15,9 +15,10 @@ export default function SurfacePage() {
   const [techFilter, setTechFilter] = useState('')
   const [niche20Filter, setNiche20Filter] = useState('')
   const [aliveOnly, setAliveOnly] = useState(true)
+  const [minSig, setMinSig] = useState(0)
 
-  // Sort
-  const [sortBy, setSortBy] = useState('mean_abs')
+  // Sort — default to significance for surfaces that have it
+  const [sortBy, setSortBy] = useState('sig')
   const [sortDir, setSortDir] = useState('desc')
 
   // Pagination
@@ -45,6 +46,7 @@ export default function SurfacePage() {
     if (!features) return []
     let xs = features
     if (aliveOnly) xs = xs.filter((f) => f.alive)
+    if (minSig > 0) xs = xs.filter((f) => (f.sig || 0) >= minSig)
     if (tissueFilter) xs = xs.filter((f) => f.top_tissue === tissueFilter)
     if (techFilter) xs = xs.filter((f) => f.top_tech === techFilter)
     if (niche20Filter) xs = xs.filter((f) => f.top_domain_l20 === niche20Filter)
@@ -63,7 +65,7 @@ export default function SurfacePage() {
       })
     }
     return xs
-  }, [features, aliveOnly, tissueFilter, techFilter, niche20Filter, search])
+  }, [features, aliveOnly, minSig, tissueFilter, techFilter, niche20Filter, search])
 
   const sorted = useMemo(() => {
     const xs = [...filtered]
@@ -172,7 +174,7 @@ export default function SurfacePage() {
             </div>
           )}
         </div>
-        <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
+        <div className="mt-3 flex items-center gap-4 text-xs text-slate-500 flex-wrap">
           <label className="flex items-center gap-1.5">
             <input
               type="checkbox"
@@ -182,6 +184,19 @@ export default function SurfacePage() {
             />
             alive only
           </label>
+          {hasBio && (
+            <label className="flex items-center gap-2 grow max-w-xs">
+              <span className="text-slate-400">min sig</span>
+              <input
+                type="range"
+                min={0} max={60} step={1}
+                value={minSig}
+                onChange={(e) => { setMinSig(Number(e.target.value)); setPage(0) }}
+                className="grow accent-brand-500"
+              />
+              <span className="font-mono text-brand-300 w-8 text-right">{minSig}</span>
+            </label>
+          )}
           <span>·</span>
           <span>{filtered.length.toLocaleString()} of {features.length.toLocaleString()} features</span>
         </div>
@@ -193,11 +208,11 @@ export default function SurfacePage() {
           <thead>
             <tr>
               <Th col="feature_idx" label="idx" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />
+              {hasBio && <Th col="sig" label="sig" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
               {hasBio && <Th col="lb" label="label" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
               {hasBio && <Th col="top_genes" label="top genes" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
-              {hasDomain && <Th col="top_domain_l20" label="niche l20" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
+              {hasDomain && <Th col="top_domain_l20_lb" label="niche" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
               {hasDomain && <Th col="top_domain_l20_log2enr" label="log₂ enr" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
-              <Th col="mean_abs" label="mean |a|" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />
               <Th col="top_tissue" label="tissue" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />
             </tr>
           </thead>
@@ -209,6 +224,11 @@ export default function SurfacePage() {
                     {f.feature_idx}
                   </Link>
                 </td>
+                {hasBio && (
+                  <td className="font-mono tabular-nums">
+                    <SigBadge sig={f.sig} />
+                  </td>
+                )}
                 {hasBio && (
                   <td>
                     <Link
@@ -229,13 +249,23 @@ export default function SurfacePage() {
                     {(f.top_genes || '').toUpperCase() || '—'}
                   </td>
                 )}
-                {hasDomain && <td className="font-mono text-slate-300">{f.top_domain_l20 || '—'}</td>}
+                {hasDomain && (
+                  <td>
+                    {f.top_domain_l20_lb ? (
+                      <div>
+                        <div className="text-slate-200 leading-tight">{f.top_domain_l20_lb}</div>
+                        <div className="text-[10px] font-mono text-slate-500">{f.top_domain_l20}</div>
+                      </div>
+                    ) : (
+                      <span className="font-mono text-slate-500">{f.top_domain_l20 || '—'}</span>
+                    )}
+                  </td>
+                )}
                 {hasDomain && (
                   <td className="font-mono tabular-nums text-slate-300">
                     {f.top_domain_l20_log2enr != null ? f.top_domain_l20_log2enr.toFixed(2) : '—'}
                   </td>
                 )}
-                <td className="font-mono tabular-nums text-slate-400">{f.mean_abs?.toFixed(4) ?? '—'}</td>
                 <td>
                   {f.top_tissue ? <span className="pill-slate">{f.top_tissue}</span> : '—'}
                 </td>
@@ -298,6 +328,15 @@ function uniqueValues(features, key) {
   const set = new Set()
   for (const f of features) if (f[key]) set.add(f[key])
   return Array.from(set).sort()
+}
+
+function SigBadge({ sig }) {
+  const v = sig ?? 0
+  let cls = 'text-slate-500'
+  if (v >= 50) cls = 'text-emerald-300 font-bold'
+  else if (v >= 30) cls = 'text-emerald-400'
+  else if (v >= 15) cls = 'text-brand-300'
+  return <span className={cls}>{v.toFixed(0)}</span>
 }
 
 function fmtSci(x) {
