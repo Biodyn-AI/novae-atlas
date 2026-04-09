@@ -8,6 +8,7 @@ import {
   getSlides,
 } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
+import { InfoIcon } from '../components/Tooltip.jsx'
 
 const LIB_LABELS = {
   GO_Biological_Process_2023: 'GO BP',
@@ -134,14 +135,39 @@ export default function FeatureDetailPage() {
 
       {/* Top stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-        <Stat label="alive" value={data.alive ? 'yes' : 'no'} />
-        <Stat label="active cells" value={data.n_active_cells?.toLocaleString()} />
-        <Stat label="mean |a|" value={fmt4(data.mean_abs)} />
-        <Stat label="max |a|" value={fmt4(data.max_abs)} />
+        <Stat
+          label="alive"
+          value={data.alive ? 'yes' : 'no'}
+          tip="Whether this feature ever fires on any cell in the test corpus. 'Dead' features (that never activate) are excluded from analysis. Almost all features here are alive."
+        />
+        <Stat
+          label="active cells"
+          value={data.n_active_cells?.toLocaleString()}
+          tip="Number of distinct cells (out of 4.5M) where this feature has a non-zero activation. A feature with high active-cell count fires broadly; one with few active cells fires only on a specific niche."
+        />
+        <Stat
+          label="mean |a|"
+          value={fmt4(data.mean_abs)}
+          tip="Mean absolute activation strength across cells where this feature fires. Higher = the feature contributes a stronger signal when it does fire. Compare across features at the same surface."
+        />
+        <Stat
+          label="max |a|"
+          value={fmt4(data.max_abs)}
+          tip="The single highest activation value this feature reached on any cell in the corpus. The 'top cells' below are the ones at or near this maximum."
+        />
         {data.morans?.morans_i != null ? (
-          <Stat label="Moran's I" value={fmt4(data.morans.morans_i)} sub={`on ${data.morans.slide}`} />
+          <Stat
+            label="Moran's I"
+            value={fmt4(data.morans.morans_i)}
+            sub={`on ${data.morans.slide}`}
+            tip="Spatial autocorrelation — does this feature light up neighboring cells together (high I) or scattered cells (low I)? Close to 1 = a real spatial pattern, close to 0 = scattered/noise. Computed only for the causal-validation subset of features."
+          />
         ) : (
-          <Stat label="module" value={data.module ? `#${data.module.module_id}` : '—'} />
+          <Stat
+            label="module"
+            value={data.module ? `#${data.module.module_id}` : '—'}
+            tip="The co-activation module this feature belongs to. Modules are communities of features that fire on the same cells (Leiden clustering on the PMI co-activation graph). Click the Modules link from the surface page to see all modules and their members."
+          />
         )}
       </div>
 
@@ -402,10 +428,13 @@ function PrevNext({ name, idx }) {
   )
 }
 
-function Stat({ label, value, sub }) {
+function Stat({ label, value, sub, tip }) {
   return (
     <div className="card !p-3">
-      <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
+      <div className="text-[10px] uppercase tracking-wider text-slate-500 flex items-center">
+        {label}
+        {tip && <InfoIcon tip={tip} />}
+      </div>
       <div className="text-base font-semibold text-slate-100 tabular-nums">{value ?? '—'}</div>
       {sub && <div className="text-[10px] text-slate-500 mt-0.5 truncate">{sub}</div>}
     </div>
