@@ -132,9 +132,19 @@ export default function NicheBrowsePage() {
             </h2>
             {!ccc ? (
               <div className="card text-center text-slate-500 text-sm py-6">
-                {comm == null
-                  ? 'CCC analysis not yet baked. Run scripts/06_cell_cell_communication.py.'
-                  : 'No L-R signal found in this niche (gene panel may not cover the L-R pairs).'}
+                {comm == null && 'Cell-cell communication data could not be loaded.'}
+                {comm != null && !comm[level] && (
+                  `Cell-cell communication is not available for ${level.replace('_', ' ')}.`
+                )}
+                {comm != null && comm[level] && !comm[level][niche] && (
+                  <>
+                    No measurable ligand-receptor signal in this niche.
+                    <div className="text-[11px] text-slate-600 mt-2">
+                      Either fewer than 20 cells in any slide, or none of the LIANA consensus
+                      L-R pairs are covered by the gene panels of the slides where this niche appears.
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <>
