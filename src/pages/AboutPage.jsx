@@ -16,14 +16,15 @@ export default function AboutPage() {
 
       <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">Pipeline</h2>
       <p className="text-slate-300 leading-relaxed">
-        The pipeline replicates and adapts the methodology of{' '}
+        TopK SAEs are hooked at every internal surface of Novae and characterized via top-cell
+        gene markers (fold-change ranked), 5-library Enrichr enrichment, superposition geometry
+        vs SVD, and Novae's own hierarchical niche assignments. Niche-based characterization,
+        spatial-coherence testing via Moran's I, per-feature spatial projections, and per-niche
+        cell-cell communication are the Novae-specific contributions; the SAE training and
+        gene-marker pipeline follows the methodology of{' '}
         <a className="text-brand-300 hover:underline" href="https://arxiv.org/abs/2603.02952" target="_blank" rel="noopener">
           arXiv:2603.02952
-        </a>{' '}
-        — TopK SAEs hooked at every internal surface of the model, characterized via top-cell gene
-        markers, Enrichr enrichment, and superposition geometry. The Novae-specific additions are
-        the niche-based characterization (no analogue in single-cell models), the spatial coherence
-        tests via Moran's I, and the per-feature spatial projections.
+        </a>.
       </p>
       <ol className="text-slate-300 leading-relaxed list-decimal list-inside space-y-1 ml-2 mt-3">
         <li><strong className="text-slate-100">Phase 1</strong> — activation extraction across 12 surfaces on 4.5M cells × 15 tissues × 3 technologies</li>
@@ -37,7 +38,7 @@ export default function AboutPage() {
 
       <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">Headline findings</h2>
       <ul className="text-slate-300 leading-relaxed list-disc list-inside space-y-2 ml-2">
-        <li><strong className="text-slate-100">Superposition replicated</strong> — 99.4–100% of SAE features are non-aligned with top SVD axes. Direct match to the upstream 99.8% finding for Geneformer / scGPT. Spatial models are not exempt from superposition.</li>
+        <li><strong className="text-slate-100">Superposition</strong> — 99.4–100% of SAE features on every surface are non-aligned with the top SVD axes (cosine 0.7 threshold). The model uses directions that linear decompositions cannot find, so feature dictionaries are essential to interpret it.</li>
         <li><strong className="text-slate-100">Spatial coherence confirmed</strong> — mean Moran's I = 0.58, 94% of features &gt; 0.1. Features are bona fide spatial niches, not cell-type indicators in disguise.</li>
         <li><strong className="text-slate-100">Depth-monotonic compressibility (new)</strong> — variance explained climbs 0.81 → 0.94 from conv_0 to conv_8, module count drops 313 → 44, tech-confound rate drops 71% → 50%. The deeper GAT layers are more interpretable, more compressible, and less technology-specific.</li>
         <li><strong className="text-slate-100">Causal poverty</strong> — mean single-feature ablation effect 0.005 cosine. Spatial analogue of the upstream "minimal regulatory logic" finding. Individual features carry little causal weight; redundancy is high.</li>
@@ -98,14 +99,14 @@ export default function AboutPage() {
 
       <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">Citation</h2>
       <p className="text-slate-300 leading-relaxed">
-        If you use this atlas, please cite both the Novae paper and the upstream methodology paper:
+        If you use this atlas, please cite the Novae paper and the SAE methodology paper:
       </p>
       <div className="card !p-4 mt-3 text-xs font-mono text-slate-300 leading-relaxed">
         Blampey, Q. et al. <em>Novae: a graph-based foundation model for spatial transcriptomics
         data.</em> Nature Methods (2025).
         <br /><br />
-        Kendiukhov, I. <em>Comparative SAE atlas of Geneformer and scGPT single-cell foundation
-        models.</em> arXiv:2603.02952 (2025).
+        Kendiukhov, I. <em>Sparse autoencoder atlases of single-cell foundation models.</em>{' '}
+        arXiv:2603.02952 (2025).
       </div>
 
       <h2 className="text-xl font-bold text-slate-100 mt-10 mb-3">Source</h2>
@@ -138,7 +139,7 @@ const GLOSSARY = [
   },
   {
     term: 'Cell embedder',
-    def: 'The pre-graph layer — a frozen 512-dimensional gene-projection initialized from scGPT. SAE features here capture clean cell-type identities because the layer has not yet been "mixed" by the spatial graph.',
+    def: 'The pre-graph layer — a frozen 512-dimensional gene-embedding table (one row per gene). Holds ~31M of Novae\'s ~32M parameters. SAE features here capture clean cell-type identities because the layer has not yet been "mixed" by the spatial graph.',
   },
   {
     term: 'Top cells (top-N cells)',

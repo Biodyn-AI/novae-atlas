@@ -188,9 +188,9 @@ export default function HomePage() {
               one of them learned by SwAV alone, no cell-type labels in training.
             </UseLink>
             <UseLink to="/stories" title="97% of params are frozen, but ~1M trainable params encode all of this">
-              Cell embedder is the frozen scGPT initialization (~31M params). Only ~989k params
-              are actually learned end-to-end on spatial data — yet they encode 49,152 distinct
-              interpretable features.
+              Most of the model's weights live in a frozen pretrained gene-embedding table
+              (~31M params). Only ~989k params are actually learned end-to-end on spatial data
+              — yet they encode 49,152 distinct interpretable features.
             </UseLink>
             <UseLink to="/surfaces" title="Tech-confound rate drops 71% → 50% from conv_0 to conv_8">
               Your deeper GAT layers are progressively less technology-specific. The depth-flow
@@ -234,10 +234,10 @@ export default function HomePage() {
           />
           <FindingCard
             color="purple"
-            title="Superposition replicated"
+            title="Superposition"
             stat="99.4–100%"
             sub="features non-aligned with SVD"
-            description="Direct replication of the upstream Geneformer/scGPT 99.8% finding in the spatial setting. Spatial models are not exempt from superposition."
+            description="On every Novae surface, virtually all SAE features are non-aligned with the top SVD axes (cosine 0.7 threshold). The model uses directions that linear methods like PCA cannot find — feature dictionaries are essential for interpretation."
             href="/surfaces"
           />
           <FindingCard

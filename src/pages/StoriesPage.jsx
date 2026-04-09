@@ -145,7 +145,7 @@ export default function StoriesPage() {
       <Story id="story-03" n="03" color="purple" title="Two-tier structure: gene programs vs spatial niches">
         <p>
           Novae has two main internal representations: the <Code>cell_embedder</Code> (a 512-dim
-          frozen scGPT-initialized gene-projection layer) and the <Code>aggregator</Code> (the
+          frozen pretrained gene-projection layer) and the <Code>aggregator</Code> (the
           64-dim cell-in-niche pool that comes after 10 GAT layers of spatial integration).
           Decomposing both reveals a clean two-tier structure that wasn't obvious from looking at
           either layer in isolation:
@@ -186,8 +186,9 @@ export default function StoriesPage() {
         <p>
           <strong className="text-slate-100">Why this matters for Novae developers:</strong> you
           can now point to direct evidence of what the GAT stack is contributing on top of the
-          frozen scGPT embedding. The 1M trainable parameters are doing spatial-context integration,
-          and you can see the result in the difference between the two surfaces. Browse both at{' '}
+          frozen gene-embedding table. The ~989k trainable parameters are doing spatial-context
+          integration, and you can see the result in the difference between the two surfaces.
+          Browse both at{' '}
           <Link to="/surfaces" className="text-brand-300 hover:underline">/surfaces</Link>.
         </p>
       </Story>
@@ -224,8 +225,8 @@ export default function StoriesPage() {
         <p>
           Together these are consistent with a hypothesis: <em>the GAT stack progressively
           extracts a lower-rank, technology-invariant, niche-relevant subspace from the noisy
-          per-cell input</em>. This is the spatial-graph analogue of the "early molecular machinery
-          → late prediction-focused" hierarchy seen in the upstream Geneformer/scGPT analysis.
+          per-cell input</em>. Each successive GAT layer makes the representation cleaner, more
+          compressible, and less coupled to the technology used to generate the input.
         </p>
         <p className="mt-4">
           <strong className="text-slate-100">Why this matters for Novae developers:</strong>{' '}
