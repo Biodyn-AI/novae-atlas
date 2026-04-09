@@ -3,6 +3,26 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getCellTypeIndex } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
 
+function CellTypeRow({ feature }) {
+  const navigate = useNavigate()
+  return (
+    <tr
+      className="cursor-pointer"
+      onClick={() => navigate(`/surface/${feature.s}/feature/${feature.i}`)}
+    >
+      <td>
+        <span className={feature.s === 'aggregator' ? 'pill-blue' : 'pill-purple'}>{feature.s}</span>
+      </td>
+      <td className="font-mono text-xs text-brand-300">f{feature.i}</td>
+      <td className="font-semibold text-slate-100">
+        {feature.lb || 'Unannotated'}
+      </td>
+      <td className="font-mono text-xs text-brand-300">{fmtSci(feature.fdr)}</td>
+      <td className="text-right text-brand-400 text-xs">→</td>
+    </tr>
+  )
+}
+
 export default function CellTypeBrowsePage() {
   const { term } = useParams()
   const navigate = useNavigate()
@@ -55,26 +75,12 @@ export default function CellTypeBrowsePage() {
                 <th>idx</th>
                 <th>label</th>
                 <th>FDR</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {entry.features.map((f, i) => (
-                <tr key={i}>
-                  <td>
-                    <span className={f.s === 'aggregator' ? 'pill-blue' : 'pill-purple'}>{f.s}</span>
-                  </td>
-                  <td className="font-mono text-xs text-slate-500">
-                    <Link to={`/surface/${f.s}/feature/${f.i}`} className="hover:text-brand-300">
-                      f{f.i}
-                    </Link>
-                  </td>
-                  <td>
-                    <Link to={`/surface/${f.s}/feature/${f.i}`} className="font-semibold text-slate-100 hover:text-brand-300">
-                      {f.lb || 'Unannotated'}
-                    </Link>
-                  </td>
-                  <td className="font-mono text-xs text-brand-300">{fmtSci(f.fdr)}</td>
-                </tr>
+                <CellTypeRow key={i} feature={f} />
               ))}
             </tbody>
           </table>

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getNicheIndex, getFeatureTable, getNicheCommunication } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
 
 export default function NicheBrowsePage() {
   const { level, niche } = useParams()
+  const navigate = useNavigate()
   const [index, setIndex] = useState(null)
   // undefined = still loading, null = fetch failed, object = loaded successfully
   const [comm, setComm] = useState(undefined)
@@ -94,23 +95,19 @@ export default function NicheBrowsePage() {
                     <th>label</th>
                     <th>frac</th>
                     <th>log₂ enr</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {entry.features.map((f, i) => (
-                    <tr key={i}>
-                      <td className="font-mono text-xs text-slate-500">
-                        <Link to={`/surface/aggregator/feature/${f.i}`} className="hover:text-brand-300">
-                          f{f.i}
-                        </Link>
-                      </td>
-                      <td>
-                        <Link
-                          to={`/surface/aggregator/feature/${f.i}`}
-                          className="font-semibold text-slate-100 hover:text-brand-300"
-                        >
-                          {aggLb[f.i] || 'Unannotated'}
-                        </Link>
+                    <tr
+                      key={i}
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/surface/aggregator/feature/${f.i}`)}
+                    >
+                      <td className="font-mono text-xs text-brand-300">f{f.i}</td>
+                      <td className="font-semibold text-slate-100">
+                        {aggLb[f.i] || 'Unannotated'}
                       </td>
                       <td className="font-mono tabular-nums text-slate-300">
                         {(f.frac * 100).toFixed(1)}%
@@ -118,6 +115,7 @@ export default function NicheBrowsePage() {
                       <td className="font-mono tabular-nums text-brand-300">
                         {f.log2enr.toFixed(2)}
                       </td>
+                      <td className="text-right text-brand-400 text-xs">→</td>
                     </tr>
                   ))}
                 </tbody>

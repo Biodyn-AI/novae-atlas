@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getModules, getFeatureTable } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
 
 export default function ModulesPage() {
   const { name } = useParams()
+  const navigate = useNavigate()
   const [modulesData, setModulesData] = useState(null)
   const [features, setFeatures] = useState(null)
   const [selected, setSelected] = useState(null)
@@ -153,6 +154,7 @@ export default function ModulesPage() {
                       <th>label</th>
                       <th>top genes</th>
                       <th>tissue</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -160,20 +162,15 @@ export default function ModulesPage() {
                       const f = featureMap[idx]
                       if (!f) return null
                       return (
-                        <tr key={idx}>
-                          <td className="font-mono text-xs text-slate-500">
-                            <Link to={`/surface/${name}/feature/${idx}`} className="hover:text-brand-300">
-                              {idx}
-                            </Link>
-                          </td>
+                        <tr
+                          key={idx}
+                          className="cursor-pointer"
+                          onClick={() => navigate(`/surface/${name}/feature/${idx}`)}
+                        >
+                          <td className="font-mono text-xs text-brand-300">{idx}</td>
                           <td>
                             {f.lb ? (
-                              <Link
-                                to={`/surface/${name}/feature/${idx}`}
-                                className="font-semibold text-slate-100 hover:text-brand-300"
-                              >
-                                {f.lb}
-                              </Link>
+                              <span className="font-semibold text-slate-100">{f.lb}</span>
                             ) : (
                               <span className="text-slate-500">—</span>
                             )}
@@ -184,6 +181,7 @@ export default function ModulesPage() {
                           <td>
                             {f.top_tissue ? <span className="pill-slate">{f.top_tissue}</span> : '—'}
                           </td>
+                          <td className="text-right text-brand-400 text-xs">→</td>
                         </tr>
                       )
                     })}

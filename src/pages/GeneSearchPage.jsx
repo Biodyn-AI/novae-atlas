@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getGeneIndex, getFeatureTable } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
 
 export default function GeneSearchPage() {
+  const navigate = useNavigate()
   const [index, setIndex] = useState(null)
   const [error, setError] = useState(null)
   const [query, setQuery] = useState('')
@@ -100,34 +101,31 @@ export default function GeneSearchPage() {
                     <th>idx</th>
                     <th>label</th>
                     <th>score</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {results.map((r, i) => {
                     const lb = labelLookup[`${r.s}/${r.i}`]
                     return (
-                      <tr key={i}>
+                      <tr
+                        key={i}
+                        className="cursor-pointer"
+                        onClick={() => navigate(`/surface/${r.s}/feature/${r.i}`)}
+                      >
                         <td>
                           <span className={r.s === 'aggregator' ? 'pill-blue' : 'pill-purple'}>
                             {r.s}
                           </span>
                         </td>
-                        <td className="font-mono text-xs text-slate-500">
-                          <Link to={`/surface/${r.s}/feature/${r.i}`} className="hover:text-brand-300">
-                            f{r.i}
-                          </Link>
-                        </td>
-                        <td>
-                          <Link
-                            to={`/surface/${r.s}/feature/${r.i}`}
-                            className="font-semibold text-slate-100 hover:text-brand-300"
-                          >
-                            {lb || 'Unannotated'}
-                          </Link>
+                        <td className="font-mono text-xs text-brand-300">f{r.i}</td>
+                        <td className="font-semibold text-slate-100">
+                          {lb || 'Unannotated'}
                         </td>
                         <td className="font-mono tabular-nums text-brand-300">
                           {r.metric === 'fc' ? `${r.score.toFixed(1)}×` : r.score.toFixed(3)}
                         </td>
+                        <td className="text-right text-brand-400 text-xs">→</td>
                       </tr>
                     )
                   })}

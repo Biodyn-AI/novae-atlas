@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getFeatureTable, getSurfaces } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
 import { InfoIcon } from '../components/Tooltip.jsx'
@@ -11,6 +11,7 @@ const SURFACE_BLURBS = {
 
 export default function SurfacePage() {
   const { name } = useParams()
+  const navigate = useNavigate()
   const [surface, setSurface] = useState(null)
   const [features, setFeatures] = useState(null)
   const [error, setError] = useState(null)
@@ -246,15 +247,18 @@ export default function SurfacePage() {
               {hasDomain && <Th col="top_domain_l20_lb" label="niche" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
               {hasDomain && <Th col="top_domain_l20_log2enr" label="log₂ enr" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />}
               <Th col="top_tissue" label="tissue" sortBy={sortBy} sortDir={sortDir} setSort={(c, d) => { setSortBy(c); setSortDir(d) }} />
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {paged.map((f) => (
-              <tr key={f.feature_idx}>
-                <td className="font-mono text-xs text-slate-500">
-                  <Link to={`/surface/${name}/feature/${f.feature_idx}`} className="hover:text-brand-300">
-                    {f.feature_idx}
-                  </Link>
+              <tr
+                key={f.feature_idx}
+                className="cursor-pointer"
+                onClick={() => navigate(`/surface/${name}/feature/${f.feature_idx}`)}
+              >
+                <td className="font-mono text-xs text-brand-300">
+                  {f.feature_idx}
                 </td>
                 {hasBio && (
                   <td className="font-mono tabular-nums">
@@ -263,12 +267,9 @@ export default function SurfacePage() {
                 )}
                 {hasBio && (
                   <td>
-                    <Link
-                      to={`/surface/${name}/feature/${f.feature_idx}`}
-                      className="font-semibold text-slate-100 hover:text-brand-300 leading-tight block"
-                    >
+                    <div className="font-semibold text-slate-100 leading-tight">
                       {f.lb || '—'}
-                    </Link>
+                    </div>
                     {f.top_PanglaoDB_v2_fdr != null && f.top_PanglaoDB_v2_fdr < 0.05 && (
                       <span className="text-[10px] text-slate-500 font-mono">
                         FDR {fmtSci(f.top_PanglaoDB_v2_fdr)}
@@ -301,6 +302,7 @@ export default function SurfacePage() {
                 <td>
                   {f.top_tissue ? <span className="pill-slate">{f.top_tissue}</span> : '—'}
                 </td>
+                <td className="text-right text-brand-400 text-xs">→</td>
               </tr>
             ))}
           </tbody>
