@@ -2,6 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getFeatureTable, getSurfaces } from '../lib/data.js'
 import { Loading, ErrorBox } from '../components/Loading.jsx'
+import { InfoIcon } from '../components/Tooltip.jsx'
+
+const SURFACE_BLURBS = {
+  cell_embedder: 'Pre-graph gene-projection layer. SAE features here capture clean cell-type identities (the gene-program stratum).',
+  aggregator: "Cell-in-niche aggregator pool — the canonical 64-dim representation, bit-equal to obsm['novae_latent']. SAE features here represent spatial niches.",
+}
 
 export default function SurfacePage() {
   const { name } = useParams()
@@ -108,13 +114,39 @@ export default function SurfacePage() {
         </Link>
       </div>
 
+      {SURFACE_BLURBS[name] && (
+        <p className="text-sm text-slate-400 max-w-3xl mb-6 leading-relaxed">
+          {SURFACE_BLURBS[name]}
+        </p>
+      )}
+
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
-        <Stat label="features" value={surface.n_features?.toLocaleString()} />
-        <Stat label="alive" value={surface.alive?.toLocaleString()} />
-        <Stat label="d" value={surface.d} />
-        <Stat label="var exp" value={surface.var_exp_full?.toFixed(3) ?? '—'} />
-        <Stat label="superposition" value={surface.superposition?.toFixed(3) ?? '—'} />
+        <Stat
+          label="features"
+          value={surface.n_features?.toLocaleString()}
+          tip="Number of SAE dictionary elements (one row per feature in the table below). Each is a learned sparse direction in this surface's activation space."
+        />
+        <Stat
+          label="alive"
+          value={surface.alive?.toLocaleString()}
+          tip="Features that fire on at least one cell. Dead features never activate and are excluded from analysis."
+        />
+        <Stat
+          label="d"
+          value={surface.d ?? '—'}
+          tip="Dimension of the activation vector at this surface. The SAE expands d into many more sparse features (32× expansion factor here)."
+        />
+        <Stat
+          label="var exp"
+          value={surface.var_exp_full?.toFixed(3) ?? '—'}
+          tip="Fraction of the original activation variance that the SAE reconstruction captures. 1.0 = perfect. The aggregator reaches 0.998; conv layers range 0.81–0.94."
+        />
+        <Stat
+          label="superposition"
+          value={surface.superposition?.toFixed(3) ?? '—'}
+          tip="Fraction of features that are NOT aligned with the top-50 SVD directions (cosine 0.7 threshold). Close to 1.0 means linear methods like PCA cannot find these features — a feature dictionary is essential."
+        />
       </div>
 
       {/* Filters */}
@@ -314,10 +346,13 @@ function Th({ col, label, sortBy, sortDir, setSort }) {
   )
 }
 
-function Stat({ label, value }) {
+function Stat({ label, value, tip }) {
   return (
     <div className="card !p-3">
-      <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
+      <div className="text-[10px] uppercase tracking-wider text-slate-500 flex items-center">
+        {label}
+        {tip && <InfoIcon tip={tip} />}
+      </div>
       <div className="text-base font-semibold text-slate-100 tabular-nums">{value ?? '—'}</div>
     </div>
   )
