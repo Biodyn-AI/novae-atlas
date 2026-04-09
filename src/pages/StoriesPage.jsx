@@ -329,7 +329,10 @@ function Embed({ surface, idx, caption }) {
   const slideTop = topCells.filter((t) => t.slide_idx === slideIdx)
 
   return (
-    <div className="card !p-2 mt-4">
+    <Link
+      to={`/surface/${surface}/feature/${idx}`}
+      className="card !p-2 mt-4 block hover:border-brand-500/50 transition group"
+    >
       <div className="pointer-events-none">
         <Plot
           data={[
@@ -372,8 +375,10 @@ function Embed({ surface, idx, caption }) {
           style={{ width: '100%' }}
         />
       </div>
-      <div className="text-[10px] text-slate-500 text-center pb-1">{caption}</div>
-    </div>
+      <div className="text-[10px] text-slate-500 text-center pb-1 group-hover:text-brand-300 transition">
+        {caption} · click to open the interactive feature page →
+      </div>
+    </Link>
   )
 }
 

@@ -60,7 +60,9 @@ export default function NicheBrowsePage() {
   // Detail view
   if (level && niche && index[level] && index[level][niche]) {
     const entry = index[level][niche]
-    const ccc = comm && comm[level] && comm[level][niche]
+    const commIsError = comm && comm._error
+    const commLoaded = comm && !comm._error
+    const ccc = commLoaded && comm[level] && comm[level][niche]
     return (
       <div>
         <div className="text-xs text-slate-500 mb-2">
@@ -137,11 +139,16 @@ export default function NicheBrowsePage() {
                     Loading cell-cell communication data…
                   </div>
                 )}
-                {comm === null && 'Cell-cell communication data could not be loaded.'}
-                {comm && !comm[level] && (
+                {commIsError && (
+                  <>
+                    Cell-cell communication data could not be loaded.
+                    <div className="text-[11px] text-rose-400 font-mono mt-2">{comm._error}</div>
+                  </>
+                )}
+                {commLoaded && !comm[level] && (
                   `Cell-cell communication is not available for ${level.replace('_', ' ')}.`
                 )}
-                {comm && comm[level] && !comm[level][niche] && (
+                {commLoaded && comm[level] && !comm[level][niche] && (
                   <>
                     No measurable ligand-receptor signal in this niche.
                     <div className="text-[11px] text-slate-600 mt-2">
