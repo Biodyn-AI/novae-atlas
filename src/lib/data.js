@@ -3,12 +3,16 @@
 // and served as static JSON from public/data/.
 
 const BASE = `${import.meta.env.BASE_URL}data`
+// Cache-buster set at build time via vite.config.js — appended as ?v=<id>
+// so a fresh deployment always pulls fresh data files.
+// eslint-disable-next-line no-undef
+const BUILD_ID = typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev'
 
 const cache = new Map()
 
 async function fetchJson(path) {
   if (cache.has(path)) return cache.get(path)
-  const url = `${BASE}${path}`
+  const url = `${BASE}${path}?v=${BUILD_ID}`
   const res = await fetch(url)
   if (!res.ok) throw new Error(`fetch ${url} failed: ${res.status}`)
   const data = await res.json()

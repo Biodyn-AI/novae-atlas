@@ -6,7 +6,8 @@ import { Loading, ErrorBox } from '../components/Loading.jsx'
 export default function NicheBrowsePage() {
   const { level, niche } = useParams()
   const [index, setIndex] = useState(null)
-  const [comm, setComm] = useState(null)
+  // undefined = still loading, null = fetch failed, object = loaded successfully
+  const [comm, setComm] = useState(undefined)
   const [aggLb, setAggLb] = useState({})
   const [error, setError] = useState(null)
   const [activeLevel, setActiveLevel] = useState(level || 'level_20')
@@ -132,11 +133,17 @@ export default function NicheBrowsePage() {
             </h2>
             {!ccc ? (
               <div className="card text-center text-slate-500 text-sm py-6">
-                {comm == null && 'Cell-cell communication data could not be loaded.'}
-                {comm != null && !comm[level] && (
+                {comm === undefined && (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+                    Loading cell-cell communication data…
+                  </div>
+                )}
+                {comm === null && 'Cell-cell communication data could not be loaded.'}
+                {comm && !comm[level] && (
                   `Cell-cell communication is not available for ${level.replace('_', ' ')}.`
                 )}
-                {comm != null && comm[level] && !comm[level][niche] && (
+                {comm && comm[level] && !comm[level][niche] && (
                   <>
                     No measurable ligand-receptor signal in this niche.
                     <div className="text-[11px] text-slate-600 mt-2">
