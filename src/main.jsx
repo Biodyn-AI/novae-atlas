@@ -30,6 +30,7 @@ const router = createHashRouter([
       { path: 'surface/:name/feature/:idx/spatial', element: <SpatialPage /> },
       { path: 'surface/:name/modules', element: <ModulesPage /> },
       { path: 'genes', element: <GeneSearchPage /> },
+      { path: 'genes/:symbol', element: <GeneSearchPage /> },
       { path: 'celltypes', element: <CellTypeBrowsePage /> },
       { path: 'celltypes/:term', element: <CellTypeBrowsePage /> },
       { path: 'niches', element: <NicheBrowsePage /> },

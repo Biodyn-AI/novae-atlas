@@ -167,12 +167,16 @@ export default function NicheBrowsePage() {
                   where the pair is measured.{' '}
                   <span className="text-slate-600">{ccc.n_cells_total.toLocaleString()} cells total in this niche.</span>
                 </p>
+                <p className="text-[11px] text-slate-600 mb-2">
+                  Click any gene name to see its full atlas profile (which features load on it,
+                  other niches where it participates, external resources).
+                </p>
                 <div className="card !p-0 overflow-hidden">
                   <table className="atlas">
                     <thead>
                       <tr>
-                        <th>L</th>
-                        <th>R</th>
+                        <th>ligand</th>
+                        <th>receptor</th>
                         <th>enr</th>
                         <th>score</th>
                       </tr>
@@ -180,8 +184,22 @@ export default function NicheBrowsePage() {
                     <tbody>
                       {ccc.lr.map((p, i) => (
                         <tr key={i}>
-                          <td className="font-mono font-semibold text-slate-100 uppercase">{p.L}</td>
-                          <td className="font-mono font-semibold text-slate-100 uppercase">{p.R}</td>
+                          <td>
+                            <Link
+                              to={`/genes/${p.L}`}
+                              className="font-mono font-semibold text-slate-100 uppercase hover:text-brand-300"
+                            >
+                              {p.L}
+                            </Link>
+                          </td>
+                          <td>
+                            <Link
+                              to={`/genes/${p.R}`}
+                              className="font-mono font-semibold text-slate-100 uppercase hover:text-brand-300"
+                            >
+                              {p.R}
+                            </Link>
+                          </td>
                           <td className="font-mono tabular-nums text-brand-300">
                             {p.enrichment.toFixed(2)}×
                           </td>

@@ -57,6 +57,14 @@ export async function getNicheCommunication() {
   }
 }
 
+export async function getGeneCCC() {
+  try {
+    return await fetchJson('/gene_ccc_index.json')
+  } catch (e) {
+    return null
+  }
+}
+
 export async function getSurfaces() {
   return fetchJson('/surfaces.json')
 }
