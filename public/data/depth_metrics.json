@@ -1,0 +1,110 @@
+[
+  {
+    "surface": "cell_embedder",
+    "layer_idx": 0,
+    "var_explained_full": 0.9138670946232244,
+    "n_modules": 103,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.668701171875,
+    "fraction_non_aligned_svd": 0.9996337890625
+  },
+  {
+    "surface": "conv_0",
+    "layer_idx": 1,
+    "var_explained_full": 0.8071279458855198,
+    "n_modules": 93,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.71240234375,
+    "fraction_non_aligned_svd": 1.0
+  },
+  {
+    "surface": "conv_1",
+    "layer_idx": 2,
+    "var_explained_full": 0.8450003751712986,
+    "n_modules": 672,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.702880859375,
+    "fraction_non_aligned_svd": 0.99951171875
+  },
+  {
+    "surface": "conv_2",
+    "layer_idx": 3,
+    "var_explained_full": 0.876188912189249,
+    "n_modules": 313,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.6884765625,
+    "fraction_non_aligned_svd": 0.999755859375
+  },
+  {
+    "surface": "conv_3",
+    "layer_idx": 4,
+    "var_explained_full": 0.8992813464512303,
+    "n_modules": 188,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.704833984375,
+    "fraction_non_aligned_svd": 1.0
+  },
+  {
+    "surface": "conv_4",
+    "layer_idx": 5,
+    "var_explained_full": 0.9130480770004831,
+    "n_modules": 149,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.68115234375,
+    "fraction_non_aligned_svd": 0.999755859375
+  },
+  {
+    "surface": "conv_5",
+    "layer_idx": 6,
+    "var_explained_full": 0.924649183167313,
+    "n_modules": 118,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.5751953125,
+    "fraction_non_aligned_svd": 0.999755859375
+  },
+  {
+    "surface": "conv_6",
+    "layer_idx": 7,
+    "var_explained_full": 0.9295307740585074,
+    "n_modules": 108,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.54052734375,
+    "fraction_non_aligned_svd": 1.0
+  },
+  {
+    "surface": "conv_7",
+    "layer_idx": 8,
+    "var_explained_full": 0.9336390613916221,
+    "n_modules": 106,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.592041015625,
+    "fraction_non_aligned_svd": 0.99951171875
+  },
+  {
+    "surface": "conv_8",
+    "layer_idx": 9,
+    "var_explained_full": 0.9362440025037014,
+    "n_modules": 88,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.56201171875,
+    "fraction_non_aligned_svd": 1.0
+  },
+  {
+    "surface": "conv_9",
+    "layer_idx": 10,
+    "var_explained_full": 0.9029322157047099,
+    "n_modules": 44,
+    "alive_fraction": 0.99951171875,
+    "tech_confounded_fraction": 0.505859375,
+    "fraction_non_aligned_svd": 1.0
+  },
+  {
+    "surface": "aggregator",
+    "layer_idx": 11,
+    "var_explained_full": 0.9977305242856517,
+    "n_modules": 29,
+    "alive_fraction": 1.0,
+    "tech_confounded_fraction": 0.62109375,
+    "fraction_non_aligned_svd": 0.99365234375
+  }
+]

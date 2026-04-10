@@ -15,6 +15,7 @@ import TourPage from './pages/TourPage.jsx'
 import StoriesPage from './pages/StoriesPage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import CausalAuditPage from './pages/CausalAuditPage.jsx'
+import LayerFlowPage from './pages/LayerFlowPage.jsx'
 import './index.css'
 
 const router = createHashRouter([
@@ -37,6 +38,7 @@ const router = createHashRouter([
       { path: 'niches', element: <NicheBrowsePage /> },
       { path: 'niches/:level/:niche', element: <NicheBrowsePage /> },
       { path: 'causal', element: <CausalAuditPage /> },
+      { path: 'layers', element: <LayerFlowPage /> },
       { path: 'about', element: <AboutPage /> },
     ],
   },
