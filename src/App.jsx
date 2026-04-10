@@ -26,6 +26,7 @@ export default function App() {
             <NavLink to="/celltypes" className={navClass}>Cell types</NavLink>
             <NavLink to="/niches" className={navClass}>Niches</NavLink>
             <NavLink to="/surfaces" className={navClass}>Surfaces</NavLink>
+            <NavLink to="/causal" className={navClass}>Causal</NavLink>
             <NavLink to="/about" className={navClass}>About</NavLink>
             <a
               href="https://github.com/Biodyn-AI/novae-atlas"

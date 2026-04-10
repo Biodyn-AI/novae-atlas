@@ -120,3 +120,7 @@ export async function getSlideBackground(slideIdx) {
 export async function getFeatureSpatial(surface, idx) {
   return fetchJson(`/spatial/feature/${surface}/${idx}.json`)
 }
+
+export async function getCausalAudit() {
+  return fetchJson('/causal_audit.json')
+}
