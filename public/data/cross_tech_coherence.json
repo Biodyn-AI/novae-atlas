@@ -1,0 +1,24 @@
+{
+  "n_tissue_pairs": 7,
+  "mean_spearman_rho": 0.5596276008054674,
+  "median_spearman_rho": 0.564286000797316,
+  "min_spearman_rho": 0.4818002425325806,
+  "tissues": [
+    "liver",
+    "lung",
+    "breast",
+    "colon",
+    "ovarian",
+    "prostate",
+    "skin"
+  ],
+  "per_tissue_rho": {
+    "liver": 0.5471,
+    "lung": 0.5643,
+    "breast": 0.6167,
+    "colon": 0.4966,
+    "ovarian": 0.5704,
+    "prostate": 0.6405,
+    "skin": 0.4818
+  }
+}

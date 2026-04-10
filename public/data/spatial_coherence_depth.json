@@ -1,0 +1,90 @@
+[
+  {
+    "layer": "conv_0",
+    "n_features_with_signal": 4096,
+    "mean_morans_i": 0.2693466246128082,
+    "median_morans_i": 0.2498561143875122,
+    "std_morans_i": 0.08432918041944504,
+    "time_s": 174.1
+  },
+  {
+    "layer": "conv_1",
+    "n_features_with_signal": 4096,
+    "mean_morans_i": 0.2399086058139801,
+    "median_morans_i": 0.21687379479408264,
+    "std_morans_i": 0.09395027160644531,
+    "time_s": 173.5
+  },
+  {
+    "layer": "conv_2",
+    "n_features_with_signal": 4092,
+    "mean_morans_i": 0.2225770801305771,
+    "median_morans_i": 0.1962626427412033,
+    "std_morans_i": 0.09850183874368668,
+    "time_s": 169.2
+  },
+  {
+    "layer": "conv_3",
+    "n_features_with_signal": 4086,
+    "mean_morans_i": 0.21622546017169952,
+    "median_morans_i": 0.19073405861854553,
+    "std_morans_i": 0.09855998307466507,
+    "time_s": 166.3
+  },
+  {
+    "layer": "conv_4",
+    "n_features_with_signal": 4071,
+    "mean_morans_i": 0.20818860828876495,
+    "median_morans_i": 0.18127714097499847,
+    "std_morans_i": 0.10234673321247101,
+    "time_s": 158.4
+  },
+  {
+    "layer": "conv_5",
+    "n_features_with_signal": 4051,
+    "mean_morans_i": 0.21305160224437714,
+    "median_morans_i": 0.1847793161869049,
+    "std_morans_i": 0.10346248745918274,
+    "time_s": 167.2
+  },
+  {
+    "layer": "conv_6",
+    "n_features_with_signal": 4036,
+    "mean_morans_i": 0.20601820945739746,
+    "median_morans_i": 0.1795845627784729,
+    "std_morans_i": 0.10500927269458771,
+    "time_s": 168.5
+  },
+  {
+    "layer": "conv_7",
+    "n_features_with_signal": 4042,
+    "mean_morans_i": 0.20714332163333893,
+    "median_morans_i": 0.18067114055156708,
+    "std_morans_i": 0.10428951680660248,
+    "time_s": 170.3
+  },
+  {
+    "layer": "conv_8",
+    "n_features_with_signal": 4058,
+    "mean_morans_i": 0.2073814868927002,
+    "median_morans_i": 0.17999905347824097,
+    "std_morans_i": 0.10213812440633774,
+    "time_s": 171.4
+  },
+  {
+    "layer": "conv_9",
+    "n_features_with_signal": 1706,
+    "mean_morans_i": 0.2182130664587021,
+    "median_morans_i": 0.1826542317867279,
+    "std_morans_i": 0.12648151814937592,
+    "time_s": 67.5
+  },
+  {
+    "layer": "aggregator",
+    "n_features_with_signal": 1651,
+    "mean_morans_i": 0.11888882517814636,
+    "median_morans_i": 0.0987207368016243,
+    "std_morans_i": 0.09242209792137146,
+    "time_s": 64.7
+  }
+]
