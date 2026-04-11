@@ -1,0 +1,22 @@
+{
+  "conv_0": {
+    "annotation_rate": 1.0,
+    "n_features": 4096,
+    "n_with_significant_enrichment": 4096
+  },
+  "conv_3": {
+    "annotation_rate": 1.0,
+    "n_features": 4096,
+    "n_with_significant_enrichment": 4096
+  },
+  "conv_6": {
+    "annotation_rate": 0.998,
+    "n_features": 4096,
+    "n_with_significant_enrichment": 4088
+  },
+  "conv_9": {
+    "annotation_rate": 0.9097,
+    "n_features": 2048,
+    "n_with_significant_enrichment": 1863
+  }
+}
